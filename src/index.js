@@ -1,17 +1,29 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
-import './index.css';
-import App from './App';
-import reportWebVitals from './reportWebVitals';
+import { StrictMode } from "react";
+import { render } from "react-dom";
+import "./index.css";
+import { App } from "./App";
+import axios from "axios";
+import { store } from "./store/";
+import { Provider } from "react-redux";
+import { BrowserRouter } from "react-router-dom";
+import "react-notifications/lib/notifications.css";
 
-ReactDOM.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>,
-  document.getElementById('root')
+axios.defaults.baseURL = "http://localhost:5000";
+axios.interceptors.request.use(
+  (config) => {
+    config.headers.Authorization = localStorage.getItem("token");
+    return config;
+  },
+  (error) => Promise.reject(error)
 );
 
-// If you want to start measuring performance in your app, pass a function
-// to log results (for example: reportWebVitals(console.log))
-// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
-reportWebVitals();
+render(
+  <StrictMode>
+    <Provider store={store}>
+      <BrowserRouter>
+        <App />
+      </BrowserRouter>
+    </Provider>
+  </StrictMode>,
+  document.getElementById("root")
+);
